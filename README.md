@@ -1,6 +1,7 @@
 # DevOpsBck
 This Console Application can be Schedule and will download all your repositories inside the Azure Dev Ops.
 Edit the jsconfig.json with you company informations
+Feel free to download,clone and modify the Repo as your needs.
 Please follow this instructions in order to obtain the Personal Token Access on Dev Ops
 
 https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows
