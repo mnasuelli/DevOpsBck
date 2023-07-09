@@ -1,0 +1,13 @@
+﻿global using DevOpsBck.Interfaces;
+global using DevOpsBck.Common;
+global using Newtonsoft.Json;
+global using System.Net.Http;
+global using System.Net.Http.Headers;
+global using System.Text;
+global using DevOpsBck.Models;
+global using System.Net.Http.Json;
+global using System.IO.Compression;
+global using static DevOpsBck.Models.RepoModel;
+global using static DevOpsBck.Models.FilesRepo;
+global using static DevOpsBck.Models.ItemsMetadata;
+global using static DevOpsBck.Common.Configuration;

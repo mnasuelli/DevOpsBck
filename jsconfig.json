@@ -1,0 +1,9 @@
+{
+  "OrganizationName": "*******",
+  "ProjectName": "*******",
+  "user": "*******",
+  "PersonalAccessToken": "*********************",
+  "DestinationPath": "*******",
+  "ApiVersion": "api-version=7.0",
+  "BaseUri": "https://dev.azure.com"
+}
