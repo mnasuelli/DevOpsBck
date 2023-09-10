@@ -1,9 +1,10 @@
 {
-  "OrganizationName": "*******",
-  "ProjectName": "*******",
-  "user": "*******",
-  "PersonalAccessToken": "*********************",
-  "DestinationPath": "*******",
+  "OrganizationName": "***********",
+  "ProjectName": "*********",
+  "user": "***********",
+  "PersonalAccessToken": "***********",
+  "DestinationPath": "C:\\Users\\************\\Downloads\\BckDevOps\\",
   "ApiVersion": "api-version=7.0",
-  "BaseUri": "https://dev.azure.com"
+  "BaseUri": "https://dev.azure.com",
+  "BackupDays": 5
 }

@@ -5,6 +5,7 @@
         public enum Result
         {
             Success,
+            Normal,
             Warning,
             Error,
         }

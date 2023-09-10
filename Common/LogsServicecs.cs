@@ -3,8 +3,8 @@
     public static class LogsServicecs
     {
         private static string separator = ";";
-        private static IConfiguration? _configuration;
-        private static StringBuilder? logBuilder { get; set; }
+        private static IConfiguration _configuration;
+        private static StringBuilder logBuilder { get; set; }
         public static StringBuilder InitLogs()
         {
             Configuration configuration = new Configuration();  
@@ -29,7 +29,7 @@
 
         public static void CreateFileLogs()
         {
-            string file = $"{_configuration.Settings.DestinationPath}logs.csv";
+            string file = _configuration.Settings.DestinationPath + "logs.csv";
             File.AppendAllText(file, logBuilder.ToString());
         }
     }

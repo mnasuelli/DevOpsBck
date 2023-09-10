@@ -1,15 +1,14 @@
 ﻿Dictionary<string, string> reposIdentity = new Dictionary<string, string>();
-//Init Configuration Parameters
+//Inizializzo i parametri di Configurazione
 IConfiguration Configuration = new Configuration();
-//Init Client 
+//Inizializzo il Client 
 ClientBase baseClient = new ClientBase(Configuration);
 var myclient = baseClient.GetClient();
-//Get Repositories List
+//Ottengo la lista dei Repositories
 IDevOpsCommand devOpsCommand = new DevOpsCommand();
 RepoRoot repos = devOpsCommand.GetRepositories(myclient, Configuration);
-//Make Folders or Upadate if exist
+//Creo le Cartelle o le aggiorno.
 IFileManagerServices fileManager = new FileManagerServices();
-fileManager.ZipFolders(Configuration);
 if (repos != null && repos.count > 0)
 {
     foreach (RepoModel.Value vals in repos.value)
@@ -19,35 +18,46 @@ if (repos != null && repos.count > 0)
 }
 fileManager.CreateFolders(reposIdentity.Values.ToList(), Configuration);
 LogsServicecs.InitLogs();
-//Download Files inside Destination Folder
+//Scarico i File dentro alle Cartelle
 if (reposIdentity.Count > 0)
 {
     foreach (var id in reposIdentity.Keys.ToList())
     {
-        //Set Folder Path
+        //Setto la cartella Root del progetto
         string? repoName = reposIdentity.Where(x => x.Key.Equals(id)).Select(x => x.Value).FirstOrDefault();
+        LogsServicecs.AddLogs(IEnumResult.Result.Normal.ToString(), repoName, DateTime.Now.ToString());
         string rootRepoPath = Configuration.Settings.DestinationPath + repoName;
-        //Get Files From Repo
-        RepoFilesRoot files = devOpsCommand.GetRepoFiles(id, myclient, Configuration);
-
-        if (files.count > 0 && files != null)
+        fileManager.ZipFolders(rootRepoPath, Configuration);
+        rootRepoPath = fileManager.CreateSubFolders(rootRepoPath+ @"/"+repoName, Configuration, true);
+        RepoFilesRoot? files = null;
+        BranchesRootobject? branches = devOpsCommand.GetBranches(id, myclient, Configuration);
+        for (int i = 0; i < branches.count; i++)
         {
-            foreach (FilesRepo.Value vals in files.value)
+            string branchName = branches.value[i].name.Replace("refs/heads/","");
+            //Ottengo l'elenco dei Files del Repo
+            files = devOpsCommand.GetRepoFiles(id, myclient, Configuration, branchName);
+            string localPathFile = rootRepoPath + @"/" + branchName;
+            localPathFile = fileManager.CreateSubFolders(localPathFile, Configuration, false);
+            LogsServicecs.AddLogs(IEnumResult.Result.Normal.ToString(), localPathFile, DateTime.Now.ToString());
+            if (files != null && files.count > 0)
             {
-                string? filePath = rootRepoPath + vals.path.Replace("/", @"\");
-                if (vals.isFolder && !vals.path.Equals("/"))
+                foreach (FilesRepo.Value vals in files.value)
                 {
-                    if (!Directory.Exists(filePath))
+                    string? filePath = localPathFile + vals.path.Replace("/", @"\");
+                    if (vals.isFolder && !vals.path.Equals("/"))
                     {
-                        Directory.CreateDirectory(filePath);
+                        if (!Directory.Exists(filePath))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
                     }
-                }
-                bool confirm = false;
-                if (vals.gitObjectType == "blob")
-                    confirm = await devOpsCommand.DownloadRepoFile(id, vals.path, filePath, myclient, Configuration);
-                if (confirm)
-                {
-                    LogsServicecs.AddLogs(IEnumResult.Result.Success.ToString(), vals.path, DateTime.Now.ToString());
+                    bool confirm = false;
+                    if (vals.gitObjectType == "blob")
+                        confirm = await devOpsCommand.DownloadRepoFile(id, vals.path, filePath, myclient, Configuration);
+                    if (confirm)
+                    {
+                        LogsServicecs.AddLogs(IEnumResult.Result.Success.ToString(), vals.path, DateTime.Now.ToString());
+                    }
                 }
             }
         }

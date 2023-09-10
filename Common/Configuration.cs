@@ -25,6 +25,8 @@ namespace DevOpsBck.Common
             public string? DestinationPath { get; set; }
             public string? BaseUri { get; set; }
             public string? ApiVersion { get; set; }
+
+            public int BackupDays { get; set; }
         }
     }
 }
